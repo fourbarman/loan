@@ -5,30 +5,23 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import ru.job4j.domain.Contract
+import ru.job4j.filter.ContractFilter
+import ru.job4j.service.ContractService
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArrayList
 
-class ContractController {
-    private val mem = ConcurrentHashMap<String, CopyOnWriteArrayList<Contract>>()
-
+class ContractController(
+    private val contractService: ContractService
+) {
     suspend fun createPersonalAgreementContract(call: RoutingCall) {
-        val contract = call.receive<Contract>()
+        val req = call.receive<Contract>()
 
-        if (!isValidUuid(contract.clientId)) {
+        if (!isValidUuid(req.clientId)) {
             call.respond(HttpStatusCode.BadRequest, "Client id must be valid UUID")
         }
 
-        val created = Contract(
-            id = UUID.randomUUID().toString(),
-            clientId = contract.clientId
-        )
+        val resp = contractService.createPersonalAgreementContract(req)
 
-        val contracts = mem.getOrPut(contract.clientId) { CopyOnWriteArrayList() }
-
-        contracts.add(created)
-
-        call.respond(created)
+        call.respond(resp)
     }
 
     suspend fun getContracts(call: RoutingCall) {
@@ -44,8 +37,8 @@ class ContractController {
             return
         }
 
-        val contracts = mem[clientId].orEmpty()
-        call.respond(contracts)
+        val resp = contractService.getContracts(ContractFilter( clientId = clientId))
+        call.respond(resp)
     }
 
     private fun isValidUuid(value: String): Boolean {

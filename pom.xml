@@ -63,6 +63,16 @@
             <version>1.6.4</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-serialization-kotlinx-json-jvm</artifactId>
+            <version>${ktor_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-server-content-negotiation-jvm</artifactId>
+            <version>${ktor_version}</version>
+        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
@@ -79,8 +89,18 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin_version}</version>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>17</jvmTarget>
+                    <compilerPlugins>
+                        <plugin>kotlinx-serialization</plugin>
+                    </compilerPlugins>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-serialization</artifactId>
+                        <version>${kotlin_version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>compile</id>

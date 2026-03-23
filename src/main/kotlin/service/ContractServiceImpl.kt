@@ -13,4 +13,8 @@ class ContractServiceImpl(private val contractRepository: ContractRepository) : 
     override fun getContracts(filter: ContractFilter): List<Contract> {
         return contractRepository.getContracts(filter)
     }
+
+    override fun signPersonalAgreementContract(req: String): Contract? {
+        return contractRepository.signContract(req)
+    }
 }

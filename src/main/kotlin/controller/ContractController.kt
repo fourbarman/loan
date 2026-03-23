@@ -5,6 +5,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import ru.job4j.domain.Contract
+import ru.job4j.domain.ContractSignRequest
 import ru.job4j.filter.ContractFilter
 import ru.job4j.service.ContractService
 import java.util.*
@@ -38,6 +39,24 @@ class ContractController(
         }
 
         val resp = contractService.getContracts(ContractFilter( clientId = clientId))
+        call.respond(resp)
+    }
+
+    suspend fun signPersonalAgreementContract(call: RoutingCall) {
+        val req = call.receive<ContractSignRequest>()
+
+        if (!isValidUuid(req.id)) {
+            call.respond(HttpStatusCode.BadRequest, "Contract id must be valid UUID")
+            return
+        }
+
+        val resp = contractService.signPersonalAgreementContract(req.id)
+
+        if (resp == null) {
+            call.respond(HttpStatusCode.NotFound, "Contract not found")
+            return
+        }
+
         call.respond(resp)
     }
 

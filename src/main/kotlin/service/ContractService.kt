@@ -6,4 +6,5 @@ import ru.job4j.filter.ContractFilter
 interface ContractService {
     fun createPersonalAgreementContract(req: Contract): Contract
     fun getContracts(filter: ContractFilter): List<Contract>
+    fun signPersonalAgreementContract(req: String): Contract?
 }

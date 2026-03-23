@@ -19,5 +19,8 @@ fun Application.configureRouting(
         get("/contract/{clientId}") {
             contractController.getContracts(call)
         }
+        patch("/contract/signPersonalAgreementContract") {
+            contractController.signPersonalAgreementContract(call)
+        }
     }
 }
